@@ -14,11 +14,14 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var alertDialog: AlertDialog
     lateinit var adapter: ArrayAdapter<String?>
-    var selectedIndex = 0
+    private var mSelectedSchedule = 0
+    private var tempSchedule = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val text = findViewById<TextView>(R.id.mSelectedSchedule)
 
         // カレンダーのViewを準備
         val calendarView = findViewById<CalendarView>(R.id.calendar)
@@ -31,31 +34,22 @@ class MainActivity : AppCompatActivity() {
             // 選択した日付を文字列に
             val selectDate = "$year/${month + 1}/$dayOfMonth"
 
-            // スケジュール変更のスピナーを準備
-            val selectScheduleSpinner = findViewById<Spinner>(R.id.selectScheduleSpinner)
-
-            // Adapterの生成
-            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerItems)
-
-            // 選択肢の各項目のレイアウト
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            // AdapterをSpinnerのAdapterとして設定
-            selectScheduleSpinner.adapter = adapter
-
             // 日付を選択した時に表示するダイアログを準備
             var builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder.setTitle("$selectDate")
                 .setSingleChoiceItems(
-                    adapter, selectedIndex,
-                    onDialogClickListener
+                    spinnerItems, -1, onDialogClickListener
                 )
                 .setPositiveButton(R.string.schedulePost) { dialog, which ->
-                    // Positiveボタンがタップされたときに実行される処理
+                    // 「選択したスケジュールを登録する
+                    mSelectedSchedule = tempSchedule
+                    text.text = spinnerItems[mSelectedSchedule]
+                    // 選択したスケジュールを登録する
                     Toast.makeText(this, "登録しました", Toast.LENGTH_SHORT).show()
                 }
                 .setNegativeButton(R.string.cancel) { dialog, which ->
-                    // Negativeボタンがタップされたときには何も実行しない
+                    // 「戻る」ボタンをタップで何も実行せずダイアログを閉じる
+                    dialog.dismiss()
                 }
                 .create()
 
@@ -66,7 +60,6 @@ class MainActivity : AppCompatActivity() {
 
     private val onDialogClickListener =
         DialogInterface.OnClickListener { dialog, which -> // AlertDialogで選択された内容を保持
-            selectedIndex = which
-            alertDialog.dismiss()
+            tempSchedule = which
         }
 }
