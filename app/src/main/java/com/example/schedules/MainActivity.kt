@@ -12,8 +12,6 @@ class MainActivity : AppCompatActivity() {
     // スケジュールの選択肢
     private val spinnerItems = arrayOf("有給日", "休日", "祝日", "デート")
 
-    lateinit var alertDialog: AlertDialog
-    lateinit var adapter: ArrayAdapter<String?>
     private var mSelectedSchedule = 0
     private var tempSchedule = 0
 
@@ -25,9 +23,6 @@ class MainActivity : AppCompatActivity() {
 
         // カレンダーのViewを準備
         val calendarView = findViewById<CalendarView>(R.id.calendar)
-
-        // カレンダーの初期選択日を今日にする
-        val defaultDate = calendarView.date
 
         // 日付選択を検知して予定を変更するダイアログを表示
         calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
